@@ -27,6 +27,7 @@ export class Day4Component {
         const cards = this.input.split(/\r?\n|\r|\n/g);
 
         let cardScores: number[] = [];
+        let extraCards: number[] = [];
 
         this.output = 0;
 
@@ -47,14 +48,35 @@ export class Day4Component {
 
           let cardScore = 0;
           if(combos > 0)
-            cardScore = Math.pow(2, combos - 1)
-
+            {
+              cardScore = Math.pow(2, combos - 1);
+            }
           cardScores.push(cardScore);
+
+          extraCards.push(combos);
         });
 
         cardScores.forEach(cardScore => {
           this.output += cardScore;
         });
+
+        // Part 2
+        /**
+         * 1: 4
+         * 2: 2 + 1
+         * 3: 2 + 1 + 1
+         * 4: 1 + 1 + 1 + 1
+         * 5: 0 + 1 + 1 + 1
+         * 6: 0
+         * 
+         * 
+         */
+        for(let i = 0; i < extraCards.length; i++){
+          let extraCard = extraCards[i];
+          for(let j = i; j < extraCard && j < extraCards.length; j++){
+            extraCards[j] += 1;
+          }
+        }
       })}
 
   /**
