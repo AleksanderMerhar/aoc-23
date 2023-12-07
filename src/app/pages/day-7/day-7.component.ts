@@ -201,23 +201,25 @@ export class Day7Component {
 
         let JokerCount = cardMap.get('J') ?? 0;
 
-        if(JokerCount < 1) return handType;
+        if(JokerCount == 0) return handType;
 
         switch(handType) {
-          case HandType.FiveOfAKind: 
-            return handType;
+          // Impossible, Jokers don't exist in this case
+          // case HandType.FiveOfAKind: 
+          //   return handType;
           
           case HandType.FourOfAKind: 
             return HandType.FiveOfAKind;
           
-          case HandType.FullHouse: {
-            if(JokerCount == 2){
-              return HandType.FiveOfAKind;
-            }
-            // if (JokerCount == 1){
-              return HandType.FourOfAKind;
-            // }
-          };
+          // Impossible, Jokers don't exist in this case
+          // case HandType.FullHouse: {
+          //   if(JokerCount == 2){
+          //     return HandType.FiveOfAKind;
+          //   }
+          //   // if (JokerCount == 1){
+          //     return HandType.FourOfAKind;
+          //   // }
+          // };
           case HandType.ThreeOfAKind: {
             if(JokerCount == 2){
               return HandType.FiveOfAKind;
@@ -247,6 +249,9 @@ export class Day7Component {
             // }
           };
           case HandType.HighCard: {
+            if(JokerCount === 5){
+              return HandType.FiveOfAKind;
+            }
             if(JokerCount === 4){
               return HandType.FiveOfAKind;
             }
