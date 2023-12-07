@@ -8,6 +8,24 @@ interface Hand {
   cardsRating: number[];
 }
 
+
+// 0 = high card
+// 1 = pair
+// 2 = two pair
+// 3 = three of a kind
+// 4 = full house
+// 5 = four of a kind
+// 6 = five of a kind
+enum HandType{
+  HighCard = 0,
+  Pair = 1,
+  TwoPair = 2,
+  ThreeOfAKind = 3,
+  FullHouse = 4,
+  FourOfAKind = 5,
+  FiveOfAKind = 6
+}
+
 @Component({
   selector: 'app-day-7',
   standalone: true,
@@ -120,7 +138,8 @@ export class Day7Component {
           case 'A': return 14;
           case 'K': return 13;
           case 'Q': return 12;
-          case 'J': return 11;
+          /** Joker is now worth the least */
+          case 'J': return 1; // return 11;
           case 'T': return 10;
           default: return Number.parseInt(card);
         }
@@ -134,44 +153,43 @@ export class Day7Component {
           cardMap.set(card, (cardMap?.get(card) ?? 0) + 1);
         }
 
-        // 0 = high card
-        // 1 = pair
-        // 2 = two pair
-        // 3 = three of a kind
-        // 4 = full house
-        // 5 = four of a kind
-        // 6 = five of a kind
-        let handType = 0;
+        let handType: HandType = HandType.HighCard;
 
+        let isThere5OfAKind = false;
+        let isThere4OfAKind = false;
         let isThere3OfAKind = false;
         let isThereFirstPair = false;
         let isThereSecondPair = false;
 
         cardMap.forEach((score, card) => {
-          
-          if(score == 5){
-            handType = 6;
-            return;
-          }
-          if(score == 4){
-            handType = 5;
-            return;
-          }
+          if(card !== 'J'){
+            if(score == 5){
+              isThere5OfAKind = true;
+              return;
+            }
+            if(score == 4){
+              isThere4OfAKind = true;
+              return;
+            }
 
-          if(score == 3){
-            isThere3OfAKind = true;
-          }
+            if(score == 3){
+              isThere3OfAKind = true;
+            }
 
-          if(score == 2 && !isThereFirstPair){
-            isThereFirstPair = true;
-          }
-          else if(score == 2  && isThereFirstPair){
-            isThereSecondPair = true;
-          }
-
+            if(score == 2 && !isThereFirstPair){
+              isThereFirstPair = true;
+            }
+            else if(score == 2  && isThereFirstPair){
+              isThereSecondPair = true;
+            }
+        }
         });
 
-        if(isThere3OfAKind && isThereFirstPair){
+        if(isThere5OfAKind){
+          handType = 6;
+        } else if(isThere4OfAKind){
+          handType = 5;
+        } else if(isThere3OfAKind && isThereFirstPair){
           handType = 4;
         } else if(isThere3OfAKind && !isThereFirstPair){
           handType = 3;
@@ -179,6 +197,69 @@ export class Day7Component {
           handType = 2;
         } else if(isThereFirstPair){
           handType = 1;
+        }
+
+        let JokerCount = cardMap.get('J') ?? 0;
+
+        if(JokerCount < 1) return handType;
+
+        switch(handType) {
+          case HandType.FiveOfAKind: 
+            return handType;
+          
+          case HandType.FourOfAKind: 
+            return HandType.FiveOfAKind;
+          
+          case HandType.FullHouse: {
+            if(JokerCount == 2){
+              return HandType.FiveOfAKind;
+            }
+            // if (JokerCount == 1){
+              return HandType.FourOfAKind;
+            // }
+          };
+          case HandType.ThreeOfAKind: {
+            if(JokerCount == 2){
+              return HandType.FiveOfAKind;
+            }
+            // if (JokerCount == 1){
+              return HandType.FourOfAKind;
+            // }
+          };
+          case HandType.TwoPair: {
+            // We don't count jokers so below if doesn't appear
+            // if (JokerCount == 2){
+            //   return HandType.FourOfAKind;
+            // }
+            // if (JokerCount == 1){
+              return HandType.FullHouse;
+            // }
+          };
+          case HandType.Pair: {
+            if(JokerCount == 3){
+              return HandType.FiveOfAKind;
+            }
+            if (JokerCount == 2){
+              return HandType.FourOfAKind;
+            }
+            // if (JokerCount == 1){
+              return HandType.ThreeOfAKind;
+            // }
+          };
+          case HandType.HighCard: {
+            if(JokerCount === 4){
+              return HandType.FiveOfAKind;
+            }
+            if(JokerCount === 3){
+              return HandType.FourOfAKind;
+            }
+            if (JokerCount == 2){
+              return HandType.ThreeOfAKind;
+            }
+            // if (JokerCount == 1){
+              return HandType.Pair;
+            // }
+          };
         }
 
         return handType;
