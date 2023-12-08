@@ -27,8 +27,8 @@ export class Day8Component {
       .get('assets/inputs/day8.txt', {responseType: 'text'})
       .subscribe(data => {
         this.input = data;
-        // Test input
-// this.input = 
+        // Test inputs
+        // this.input = 
 // `RL
 
 // AAA = (BBB, CCC)
@@ -38,15 +38,15 @@ export class Day8Component {
 // EEE = (EEE, EEE)
 // GGG = (GGG, GGG)
 // ZZZ = (ZZZ, ZZZ)`
-// output = 2
+        // output = 2
 
-// this.input = 
+        // this.input = 
 // `LLR
-
 // AAA = (BBB, BBB)
 // BBB = (AAA, ZZZ)
 // ZZZ = (ZZZ, ZZZ)`
-// output = 6
+        // output = 6
+        
         this.calculate(this.input);
       })
     }
@@ -89,11 +89,4 @@ export class Day8Component {
       this.output = steps;
 
     }
-
-
-
-
-      
-  
-
 }

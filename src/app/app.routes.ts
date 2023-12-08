@@ -7,6 +7,7 @@ import { Day4Component } from './pages/day-4/day-4.component';
 import { Day5Component } from './pages/day-5/day-5.component';
 import { Day6Component } from './pages/day-6/day-6.component';
 import { Day7Component } from './pages/day-7/day-7.component';
+import { Day8Component } from './pages/day-8/day-8.component';
 
 export const routes: Routes = [
     {
@@ -45,6 +46,11 @@ export const routes: Routes = [
             path: '7',
             component: Day7Component,
             title: 'Day 7'
+        },
+        {
+            path: '8',
+            component: Day8Component,
+            title: 'Day 8'
         }
     ]},
     {
