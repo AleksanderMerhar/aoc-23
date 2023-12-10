@@ -69,15 +69,24 @@ export class Day9Component {
           const diffs = diffsList[i];
           const diffsBelow = diffsList[i+1];
 
-          const diffsLastElement = diffs.at(diffs.length-1) ?? 0;
-          const diffsBelowLastElement = diffsBelow.at(diffsBelow.length-1) ?? 0;
+          // const diffsLastElement = diffs.at(diffs.length-1) ?? 0;
+          // const diffsBelowLastElement = diffsBelow.at(diffsBelow.length-1) ?? 0;
 
-          diffs.push(diffsLastElement + diffsBelowLastElement);
+          const diffstFirstElement = diffs.at(0) ?? 0;
+          const diffsBelowFirstElement = diffsBelow.at(0) ?? 0;
+
+          // Part 2: instead of push, add to beginning of array
+          // diffs.push(diffsLastElement + diffsBelowLastElement);
+          diffs.unshift(diffstFirstElement - diffsBelowFirstElement);
         }
 
-        const nextValueOfHistry = diffsList[0].pop();
+        // const nextValueOfHistry = diffsList[0].pop();
 
-        results.push(nextValueOfHistry as number);
+        // results.push(nextValueOfHistry as number);
+
+        const firstValueOfHistry = diffsList[0].at(0);
+
+        results.push(firstValueOfHistry as number);
       });
 
       
