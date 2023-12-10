@@ -8,6 +8,7 @@ import {MatButtonModule} from '@angular/material/button';
 
 
 import { LightsComponent } from './components/lights/lights.component';
+import { routes } from './app.routes';
 
 
 
@@ -21,6 +22,8 @@ import { LightsComponent } from './components/lights/lights.component';
 export class AppComponent {
   title = 'aoc-merhar';
   opened: boolean = true;
+
+  protected dayRoutes = routes.filter(r => r.path == 'day')[0].children;
 
   constructor() {  console.log("test");
 }
