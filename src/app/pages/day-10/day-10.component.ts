@@ -27,11 +27,19 @@ export type Tile = '|' | '-' | 'L' | 'J' | '7' | 'F' | '.' | 'S';
 export class Day10Component {
   protected input: string = '';
   protected output: number = 0;
+  protected output2: number = 0;
 
   private x:number = 0;
   private y:number = 0;
   private map: Tile[][] = [];
   private steps: number = 0;
+  private historyX: number[] = [];
+  private historyY: number[] = [];
+  private inLoop: boolean = false;
+  private prevValueWasOnLoop: boolean = false;
+  private onLoop: boolean = false;
+  private firstTileOnLoop: Tile | undefined = undefined;
+
 
   private prevX:number = 0
   private prevY:number = 0
@@ -47,13 +55,23 @@ export class Day10Component {
 
     2nd test
     TEST_INPUT's output: 8
-   */
+//    */
   private TEST_INPUT =
-`..F7.
-.FJ|.
-SJ.L7
-|F--J
-LJ...`
+`...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........`
+
+// private TEST_INPUT =
+// `.....
+// .S-7.
+// .|.|.
+// .L-J.`
 
   
 
@@ -97,9 +115,62 @@ LJ...`
       console.log(this.steps);
 
       this.output = Math.ceil(this.steps / 2);
-      // Math.ceil(this.output);
-    
       
+      let loopSurface: number = 0;
+      // scanline map for surface in the loop
+      for(let y = 0; y < this.map.length; y++)
+       { 
+        this.inLoop = false;
+        for(let x = 0; x < this.map[y].length; x++)
+          {   
+            if(this.map[y][x] === '.') {
+              if(this.inLoop) loopSurface++;
+              continue;
+            }
+            
+            let isOnLoop = false;
+            let breakOut = false;
+              for(let i = 0; i < this.historyX.length; i++) {
+                if(this.historyX[i] === x && this.historyY[i] === y) {
+                  isOnLoop = true;
+                  if(isOnLoop && this.map[y][x] === '|'){
+                    this.toggleInLoop();
+                    breakOut = true;
+                    break;
+                  }
+                  if(this.firstTileOnLoop === undefined) {
+                    this.firstTileOnLoop = this.map[y][x];
+                    breakOut = true;
+                  }
+                  break; 
+                }
+              }
+
+            if(breakOut ||  x == this.map[y].length -1) continue;
+
+            if(isOnLoop) {
+              if(this.map[y][x] === '-') continue;
+
+              const currentTile = this.map[y][x];
+              let isUTurn = false;
+
+              if((this.firstTileOnLoop === 'F' || this.firstTileOnLoop === 'S') && currentTile === '7') isUTurn = true;
+              else if((this.firstTileOnLoop === 'L' || this.firstTileOnLoop === 'S') && currentTile === 'J') isUTurn = true;
+
+              if(!isUTurn) {
+                this.toggleInLoop();
+              }
+              this.firstTileOnLoop = undefined;
+              continue;
+            } 
+
+            if (isOnLoop)continue;
+
+            if(this.inLoop) loopSurface++;
+          }
+        }
+
+        this.output2 = loopSurface;
     }
 
     private go(): void {
@@ -217,29 +288,35 @@ LJ...`
     }
 
     private goNorth(): void {
-      this.incrementStepsAndUpdatePrevXY()
+      this.incrementStepsAndUpdateXYHistory()
       this.y--;
     }
     private goSouth(): void {
-      this.incrementStepsAndUpdatePrevXY()
+      this.incrementStepsAndUpdateXYHistory()
       this.y++;
     }
     private goEast(): void {
-      this.incrementStepsAndUpdatePrevXY()
+      this.incrementStepsAndUpdateXYHistory()
       this.x++;
     }
     private goWest(): void {
-      this.incrementStepsAndUpdatePrevXY()
+      this.incrementStepsAndUpdateXYHistory()
       this.x--;
     }
 
-    private incrementStepsAndUpdatePrevXY(): void {
+    private incrementStepsAndUpdateXYHistory(): void {
       this.steps++;
       this.prevX = this.x;
       this.prevY = this.y;
+      this.historyX.push(this.x);
+      this.historyY.push(this.y);
     }
 
     private getCurrentTile(): Tile {
       return this.map[this.y][this.x];
+    }
+
+    private toggleInLoop(): void {
+      this.inLoop = !this.inLoop;
     }
 }
