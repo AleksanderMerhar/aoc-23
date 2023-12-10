@@ -25,3 +25,8 @@
     return numbers;
 
   }
+
+  export const splitByNewLine = (input: string): string[] => {
+    const inputSplitByNewLine = input.split(/\r?\n|\r|\n/g);
+    return inputSplitByNewLine;
+  }
