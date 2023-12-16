@@ -42,12 +42,21 @@ export class Day12Component {
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1`
 
+private TEST_INPUT2 =
+`???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1
+???? 1,1`
+
   constructor(httpClient: HttpClient) {
     httpClient
       .get('assets/inputs/day12.txt', {responseType: 'text'})
       .subscribe(data => {
         this.input = data;
-        // this.input = this.TEST_INPUT;
+        // this.input = this.TEST_INPUT2;
         this.calculate(this.input)
       })
     }
@@ -102,11 +111,19 @@ export class Day12Component {
           springRow.possibleArrangements.push(possibleArrangement)
         }
 
+        const memoizedValidArrangements: string[] = [];
         springRow.possibleArrangements.forEach(possibleArrangement => {
           const groupSizes = this.getGroupSizesFromArrangement(possibleArrangement);
-          if(this.areGroupSizesEquale(groupSizes, springRow.groupSizes)) {
-            springRow.validArrangements++;
-          }
+
+          if(memoizedValidArrangements.includes(possibleArrangement.join(''))) return;
+
+
+          if(!this.areGroupSizesEquale(groupSizes, springRow.groupSizes)) return;
+
+          springRow.validArrangements++;
+          memoizedValidArrangements.push(possibleArrangement.join(''));
+
+          
         });
       });
 
